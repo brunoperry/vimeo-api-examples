@@ -1,0 +1,165 @@
+<?php
+
+// The Simple API URL
+$api_endpoint = 'http://www.vimeo.com/api/';
+
+if ($_GET['album']) {
+	
+	// Get the album
+	$album_id = $_GET['album'];
+	
+	// Load the videos and info
+	$videos = simplexml_load_file($api_endpoint.'album/'.$album_id.'/clips.xml');
+	$info = simplexml_load_file($api_endpoint.'album/'.$album_id.'/info.xml');
+	
+	// Thumbnail and title
+	$image = $info->album->thumbnail;
+	$title = $info->album->title;
+	
+}
+else if ($_GET['group']) {
+	
+	// Get the group
+	$group_id = $_GET['group'];
+	
+	// Load the videos and info
+	$videos = simplexml_load_file($api_endpoint.'group/'.$group_id.'/clips.xml');
+	$info = simplexml_load_file($api_endpoint.'group/'.$group_id.'/info.xml');
+	
+	// Thumbnail and title
+	$image = $info->group->thumbnail;
+	$title = $info->group->name;
+	
+}
+else if ($_GET['channel']) {
+	
+	// Get the channel
+	$channel_id = $_GET['channel'];
+	
+	// Load the videos and info
+	$videos = simplexml_load_file($api_endpoint.'channel/'.$channel_id.'/clips.xml');
+	$info = simplexml_load_file($api_endpoint.'channel/'.$channel_id.'/info.xml');
+	
+	// Thumbnail and title
+	$image = null;
+	$title = $info->channel->name;
+	
+}
+else {
+	
+	// Change this to your username to load in your videos
+	$vimeo_user_name = ($_GET['user']) ? $_GET['user'] : 'brad';
+
+	// Load the user's videos
+	$videos = simplexml_load_file($api_endpoint.$vimeo_user_name.'/clips.xml');
+	
+	// Thumbnail and title
+	$image = $videos->clip[0]->user_thumbnail_large;
+	$title = $videos->clip[0]->user_name."'s Videos";
+	
+}
+
+?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<title>Vimeo Simple API Gallery Example</title>
+	<style type="text/css">
+		#thumbs { overflow: auto; height: 298px; width: 300px; border: 1px solid #E7E7DE; padding: 0; float: left; }
+		#thumbs ul { list-style-type: none; margin: 0 10px 0; padding: 0 0 10px 0; }
+		#thumbs ul li { height: 75px; }
+		
+		.thumb { border: 0; float: left; width: 100px; height: 75px; background: url(http://bitcast.vimeo.com/vimeo/thumbnails/defaults/default.75x100.jpg); margin-right: 10px; }
+		
+		#embed { background-color: #E7E7DE; height: 280px; width: 504px; float: left; padding: 10px; }
+		
+		#portrait { float: left; margin-right: 5px; max-width: 100px; }
+		#stats { clear: both; margin-bottom: 20px; }
+	</style>
+	<script type="text/javascript">
+		
+		// Tell Vimeo what function to call
+		var oEmbedCallback = 'embedVideo';
+		
+		// Set up the URL
+		var oEmbedUrl = 'http://www.vimeo.com/api/oembed.json';
+		
+		// Load the first one in automatically?
+		var loadFirst = true;
+		
+		// This function puts the video on the page
+		function embedVideo(video) {
+			var videoEmbedCode = video.html;
+			videoEmbedCode = videoEmbedCode.replace(/height="(\d+)"/, 'height="280"');
+			document.getElementById('embed').innerHTML = unescape(videoEmbedCode);
+		}
+		
+		// This function runs when the page loads and adds click events to the links
+		function init() {
+			var links = document.getElementById('thumbs').getElementsByTagName('a');
+			
+			for (var i = 0; i < links.length; i++) {
+				// Load a video using oEmbed when you click on a thumb
+				if (document.addEventListener) {
+					links[i].addEventListener('click', function(e) {
+						var link = this;
+						loadScript(oEmbedUrl + '?url=' + link.href + '&width=504&callback=' + oEmbedCallback);
+						e.preventDefault();
+					}, false);
+				}
+				// IE (sucks)
+				else {
+					links[i].attachEvent('onclick', function(e) {
+						var link = e.srcElement.parentNode;
+						loadScript(oEmbedUrl + '?url=' + link.href + '&width=504&callback=' + oEmbedCallback);
+						return false;
+					});
+				}
+			}
+			
+			// Load in the first video
+			if (loadFirst) {
+				loadScript(oEmbedUrl + '?url=' + links[0].href + '&width=504&callback=' + oEmbedCallback);
+			}
+		}
+		
+		// This function loads the data from Vimeo
+		function loadScript(url) {
+			var js = document.createElement('script');
+			js.setAttribute('type', 'text/javascript');
+			js.setAttribute('src', url);
+			document.getElementsByTagName('head').item(0).appendChild(js);
+		}
+		
+		// Call our init function when the page loads
+		window.onload = init;
+		
+	</script>
+</head>
+<body>
+	
+	<h1>Vimeo Simple API Gallery Example</h1>
+	<div id="stats">
+		<img id="portrait" src="<?=$image?>" />
+		<h2><?=$title?></h2>
+		<div style="clear: both;"></div>
+	</div>
+	<div id="wrapper">
+		<div id="embed"></div>
+		<div id="thumbs">
+			<ul>
+			<?php foreach ($videos->clip as $video): ?>
+				<li>
+					<a href="<?=$video->url?>"><img src="<?=$video->thumbnail_medium?>" class="thumb" />
+					<p><?=$video->title?></p></a>
+				</li>
+			<?php endforeach; ?>
+			</ul>
+		</div>
+	</div>
+	
+</body>
+</html>
