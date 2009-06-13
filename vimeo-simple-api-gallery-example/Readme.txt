@@ -3,7 +3,7 @@ Hi!
 These are two examples of Vimeo galleries that use the Simple API
 and oEmbed.
 
-In the javascript example, you can change the "vimeoUserName"
+In the javascript example, you can change the "vimeoUsername"
 variable to load in your own videos.
 
 The PHP example is much more functional and allows you to load in
@@ -15,4 +15,4 @@ http://hate5six.com/tutorial/
 
 For more documentation on the API go to http://www.vimeo.com/api
 
-- Brad Dougherty (February 3, 2009)
+- Brad Dougherty (June 12, 2009)
