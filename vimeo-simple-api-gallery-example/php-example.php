@@ -3,14 +3,24 @@
 // The Simple API URL
 $api_endpoint = 'http://www.vimeo.com/api/';
 
+// Curl helper function
+function curl_get($url) {
+	$curl = curl_init($url);
+	curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+	curl_setopt($curl, CURLOPT_TIMEOUT, 30);
+	$return = curl_exec($curl);
+	curl_close($curl);
+	return $return;
+}
+
 if ($_GET['album']) {
 	
 	// Get the album
 	$album_id = $_GET['album'];
 	
 	// Load the videos and info
-	$videos = simplexml_load_file($api_endpoint.'album/'.$album_id.'/clips.xml');
-	$info = simplexml_load_file($api_endpoint.'album/'.$album_id.'/info.xml');
+	$videos = simplexml_load_string(curl_get($api_endpoint.'album/'.$album_id.'/clips.xml'));
+	$info = simplexml_load_string(curl_get($api_endpoint.'album/'.$album_id.'/info.xml'));
 	
 	// Thumbnail and title
 	$image = $info->album->thumbnail;
@@ -23,8 +33,8 @@ else if ($_GET['group']) {
 	$group_id = $_GET['group'];
 	
 	// Load the videos and info
-	$videos = simplexml_load_file($api_endpoint.'group/'.$group_id.'/clips.xml');
-	$info = simplexml_load_file($api_endpoint.'group/'.$group_id.'/info.xml');
+	$videos = simplexml_load_string(curl_get($api_endpoint.'group/'.$group_id.'/clips.xml'));
+	$info = simplexml_load_string(curl_get($api_endpoint.'group/'.$group_id.'/info.xml'));
 	
 	// Thumbnail and title
 	$image = $info->group->thumbnail;
@@ -37,8 +47,8 @@ else if ($_GET['channel']) {
 	$channel_id = $_GET['channel'];
 	
 	// Load the videos and info
-	$videos = simplexml_load_file($api_endpoint.'channel/'.$channel_id.'/clips.xml');
-	$info = simplexml_load_file($api_endpoint.'channel/'.$channel_id.'/info.xml');
+	$videos = simplexml_load_string(curl_get($api_endpoint.'channel/'.$channel_id.'/clips.xml'));
+	$info = simplexml_load_string(curl_get($api_endpoint.'channel/'.$channel_id.'/info.xml'));
 	
 	// Thumbnail and title
 	$image = null;
@@ -51,7 +61,7 @@ else {
 	$vimeo_user_name = ($_GET['user']) ? $_GET['user'] : 'brad';
 
 	// Load the user's videos
-	$videos = simplexml_load_file($api_endpoint.$vimeo_user_name.'/clips.xml');
+	$videos = simplexml_load_string(curl_get($api_endpoint.$vimeo_user_name.'/clips.xml'));
 	
 	// Thumbnail and title
 	$image = $videos->clip[0]->user_thumbnail_large;

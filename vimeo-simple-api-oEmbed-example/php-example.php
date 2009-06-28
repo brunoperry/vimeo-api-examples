@@ -7,15 +7,25 @@ $vimeo_user_name = ($_GET['user']) ? $_GET['user'] : 'brad';
 $api_endpoint = 'http://www.vimeo.com/api/'.$vimeo_user_name;
 $oembed_endpoint = 'http://www.vimeo.com/api/oembed.xml';
 
+// Curl helper function
+function curl_get($url) {
+	$curl = curl_init($url);
+	curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+	curl_setopt($curl, CURLOPT_TIMEOUT, 30);
+	$return = curl_exec($curl);
+	curl_close($curl);
+	return $return;
+}
+
 // Get the url for the latest video
-$videos = simplexml_load_file($api_endpoint.'/clips.xml');
+$videos = simplexml_load_string(curl_get($api_endpoint.'/clips.xml'));
 $video_url = $videos->clip[0]->url;
 
 // Create the URL
 $oembed_url = $oembed_endpoint.'?url='.rawurlencode($video_url);
 
 // Load in the oEmbed XML
-$oembed = simplexml_load_file($oembed_url);
+$oembed = simplexml_load_string(curl_get($oembed_url));
 $embed_code = html_entity_decode($oembed->html);
 
 ?>

@@ -12,18 +12,22 @@ $video_url = ($_GET['url']) ? $_GET['url'] : 'http://www.vimeo.com/757219';
 $json_url = $oembed_endpoint.'.json?url='.rawurlencode($video_url);
 $xml_url = $oembed_endpoint.'.xml?url='.rawurlencode($video_url);
 
+// Curl helper function
+function curl_get($url) {
+	$curl = curl_init($url);
+	curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+	curl_setopt($curl, CURLOPT_TIMEOUT, 30);
+	$return = curl_exec($curl);
+	curl_close($curl);
+	return $return;
+}
+
 // Load in the oEmbed XML
-$oembed = simplexml_load_file($xml_url);
+$oembed = simplexml_load_string(curl_get($xml_url));
 
 /*
-	An alternate approach would be to use CURL to load JSON,
+	An alternate approach would be to load JSON,
 	then use json_decode() to turn it into an array.
-	
-	$curl = curl_init($json_url);
-	curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-	$json = curl_exec($curl);
-	curl_close($curl);
-	$oembed = json_decode($json);
 */
 
 ?>

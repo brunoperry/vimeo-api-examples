@@ -6,9 +6,19 @@ $vimeo_user_name = ($_GET['user']) ? $_GET['user'] : 'brad';
 // API endpoint
 $api_endpoint = 'http://www.vimeo.com/api/'.$vimeo_user_name;
 
+// Curl helper function
+function curl_get($url) {
+	$curl = curl_init($url);
+	curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+	curl_setopt($curl, CURLOPT_TIMEOUT, 30);
+	$return = curl_exec($curl);
+	curl_close($curl);
+	return $return;
+}
+
 // Load the user info and clips
-$user = simplexml_load_file($api_endpoint.'/info.xml');
-$videos = simplexml_load_file($api_endpoint.'/clips.xml');
+$user = simplexml_load_string(curl_get($api_endpoint.'/info.xml'));
+$videos = simplexml_load_string(curl_get($api_endpoint.'/clips.xml'));
 
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
