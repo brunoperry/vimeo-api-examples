@@ -20,14 +20,14 @@
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
 	<script type="text/javascript">
 		
-		var apiEndpoint = 'http://www.vimeo.com/api/';
+		var apiEndpoint = 'http://www.vimeo.com/api/v2/';
 		var oEmbedCallback = 'switchVideo';
 		var videosCallback = 'setupGallery';
 		var vimeoUsername = 'brad';
 		
 		// Get the user's videos
 		$(document).ready(function() {
-			$.getScript(apiEndpoint + vimeoUsername + '/clips.json?callback=' + videosCallback);
+			$.getScript(apiEndpoint + vimeoUsername + '/videos.json?callback=' + videosCallback);
 		});
 		
 		function getVideo(url) {
@@ -37,7 +37,7 @@
 		function setupGallery(videos) {
 			
 			// Set the user's thumbnail and the page title
-			$('#stats').prepend('<img id="portrait" src="' + videos[0].user_thumbnail_large + '" />');
+			$('#stats').prepend('<img id="portrait" src="' + videos[0].user_portrait_medium + '" />');
 			$('#stats h2').text(videos[0].user_name + "'s Videos");
 			
 			// Load the first video

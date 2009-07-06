@@ -11,11 +11,11 @@
 		var vimeoUserName = 'brad';
 		
 		// Tell Vimeo what function to call
-		var clipCallback = 'latestClip';
+		var videoCallback = 'latestVideo';
 		var oEmbedCallback = 'embedVideo';
 		
 		// Set up the URLs
-		var clipsUrl = 'http://www.vimeo.com/api/' + vimeoUserName + '/clips.json?callback=' + clipCallback;
+		var videosUrl = 'http://www.vimeo.com/api/v2/' + vimeoUserName + '/videos.json?callback=' + videoCallback;
 		var oEmbedUrl = 'http://www.vimeo.com/api/oembed.json';
 		
 		// This function puts the video on the page
@@ -25,11 +25,11 @@
 		}
 		
 		// This function uses oEmbed to get the last clip
-		function latestClip(clips) {
-			var clipUrl = clips[0].url;
+		function latestVideo(videos) {
+			var videoUrl = videos[0].url;
 			
 			// Get the oEmbed stuff
-			loadScript(oEmbedUrl + '?url=' + encodeURIComponent(clipUrl) + '&callback=' + oEmbedCallback);
+			loadScript(oEmbedUrl + '?url=' + encodeURIComponent(videoUrl) + '&callback=' + oEmbedCallback);
 		}
 		
 		// This function loads the data from Vimeo
@@ -41,7 +41,7 @@
 		}
 		
 		// Call our init function when the page loads
-		window.onload = loadScript(clipsUrl);
+		window.onload = loadScript(videosUrl);
 		
 	</script>
 </head>

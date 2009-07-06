@@ -1,7 +1,7 @@
 <?php
 
 // The Simple API URL
-$api_endpoint = 'http://www.vimeo.com/api/';
+$api_endpoint = 'http://www.vimeo.com/api/v2/';
 
 // Curl helper function
 function curl_get($url) {
@@ -19,7 +19,7 @@ if ($_GET['album']) {
 	$album_id = $_GET['album'];
 	
 	// Load the videos and info
-	$videos = simplexml_load_string(curl_get($api_endpoint.'album/'.$album_id.'/clips.xml'));
+	$videos = simplexml_load_string(curl_get($api_endpoint.'album/'.$album_id.'/videos.xml'));
 	$info = simplexml_load_string(curl_get($api_endpoint.'album/'.$album_id.'/info.xml'));
 	
 	// Thumbnail and title
@@ -33,7 +33,7 @@ else if ($_GET['group']) {
 	$group_id = $_GET['group'];
 	
 	// Load the videos and info
-	$videos = simplexml_load_string(curl_get($api_endpoint.'group/'.$group_id.'/clips.xml'));
+	$videos = simplexml_load_string(curl_get($api_endpoint.'group/'.$group_id.'/videos.xml'));
 	$info = simplexml_load_string(curl_get($api_endpoint.'group/'.$group_id.'/info.xml'));
 	
 	// Thumbnail and title
@@ -47,7 +47,7 @@ else if ($_GET['channel']) {
 	$channel_id = $_GET['channel'];
 	
 	// Load the videos and info
-	$videos = simplexml_load_string(curl_get($api_endpoint.'channel/'.$channel_id.'/clips.xml'));
+	$videos = simplexml_load_string(curl_get($api_endpoint.'channel/'.$channel_id.'/videos.xml'));
 	$info = simplexml_load_string(curl_get($api_endpoint.'channel/'.$channel_id.'/info.xml'));
 	
 	// Thumbnail and title
@@ -61,11 +61,11 @@ else {
 	$vimeo_user_name = ($_GET['user']) ? $_GET['user'] : 'brad';
 
 	// Load the user's videos
-	$videos = simplexml_load_string(curl_get($api_endpoint.$vimeo_user_name.'/clips.xml'));
+	$videos = simplexml_load_string(curl_get($api_endpoint.$vimeo_user_name.'/videos.xml'));
 	
 	// Thumbnail and title
-	$image = $videos->clip[0]->user_thumbnail_large;
-	$title = $videos->clip[0]->user_name."'s Videos";
+	$image = $videos->video[0]->user_thumbnail_large;
+	$title = $videos->video[0]->user_name."'s Videos";
 	
 }
 
@@ -161,7 +161,7 @@ else {
 		<div id="embed"></div>
 		<div id="thumbs">
 			<ul>
-			<?php foreach ($videos->clip as $video): ?>
+			<?php foreach ($videos->video as $video): ?>
 				<li>
 					<a href="<?=$video->url?>"><img src="<?=$video->thumbnail_medium?>" class="thumb" />
 					<p><?=$video->title?></p></a>
