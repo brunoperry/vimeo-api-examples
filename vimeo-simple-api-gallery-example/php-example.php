@@ -64,7 +64,7 @@ else {
 	$videos = simplexml_load_string(curl_get($api_endpoint.$vimeo_user_name.'/videos.xml'));
 	
 	// Thumbnail and title
-	$image = $videos->video[0]->user_thumbnail_large;
+	$image = $videos->video[0]->user_portrait_medium;
 	$title = $videos->video[0]->user_name."'s Videos";
 	
 }
