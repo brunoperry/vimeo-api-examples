@@ -1,0 +1,93 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<title>Vimeo Moogaloop API Example</title>
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/mootools/1.2.3/mootools-yui-compressed.js"></script>
+	<script type="text/javascript">
+		
+		var video_id = 4632707;
+		var moogaloop = false;
+		
+		function vimeo_player_loaded() {
+			moogaloop = $('moogaloop');
+			$('controls').setStyle('display', '');
+			
+			Swiff.remote(moogaloop, 'addEventListener', 'onProgress', 'vimeo_on_progress');
+			Swiff.remote(moogaloop, 'addEventListener', 'onLoading',  'vimeo_on_loading');
+			Swiff.remote(moogaloop, 'addEventListener', 'onFinish',   'vimeo_on_finish');
+			$('vimeo_duration').innerHTML = Swiff.remote(moogaloop, 'getDuration');
+		}
+		
+		function vimeo_on_progress(time) {
+			$('vimeo_cur_time').innerHTML = time + 's';
+		}
+		
+		function vimeo_on_loading(data) {
+			$('vimeo_bytes_loaded').innerHTML = data.bytesLoaded;
+			$('vimeo_bytes_total').innerHTML = data.bytesTotal;
+			$('vimeo_decimal_loaded').innerHTML = data.decimal;
+			$('vimeo_percent_loaded').innerHTML = data.percent + '%';
+		}
+		
+		function vimeo_on_finish() {
+			// Finished!
+		}
+		
+		function toggle_loop(el) {
+			if (el.value == 'Loop is off') {
+				el.value = 'Loop is on';
+				Swiff.remote(moogaloop, 'setLoop', true);
+			}
+			else {
+				el.value = 'Loop is off';
+				Swiff.remote(moogaloop, 'setLoop', false);
+			}
+		}
+		
+		// Run the javascript when the page is ready
+		window.addEvent('domready', function() { 
+			// For more Swiff documentation visit: http://mootools.net/docs/core/Utilities/Swiff
+			var moogaloop = new Swiff('http://www.vimeo.com/moogaloop.swf', {
+			    id: 'moogaloop',
+				container: 'vimeo_player_holder',	
+			    width: 504,
+			    height: 340,
+			    vars: {
+			        clip_id: video_id,
+			        show_portrait: 1,
+			        show_byline: 1,
+			        show_title: 1,
+					js_api: 1 // required in order to use the Javascript API
+			    }
+			});
+		});
+	</script>
+</head>
+<body>
+	
+	<h1>Vimeo Moogaloop API Example</h1>
+	<div id="vimeo_player_holder" style="width: 504px; height: 340px;"></div>
+	<div id="controls" style="display: none;">
+		<p>
+			<a href="javascript: void(0)" onclick="Swiff.remote(moogaloop, 'play')">Play</a> 
+			<a href="javascript: void(0)" onclick=" Swiff.remote(moogaloop, 'pause')">Pause</a>
+		</p>
+		<p>
+			Duration: <span id="vimeo_duration">0</span> seconds<br />
+			Seek: <input type="text" value="0" onblur="Swiff.remote(moogaloop, 'seekTo', this.value)" /><br />
+			Color: <input type="text" value="" onblur="Swiff.remote(moogaloop, 'changeColor', this.value)" /><br />
+			Volume: <input type="text" value="100" onblur="Swiff.remote(moogaloop, 'setVolume', this.value)" /><br />
+			<input type="button" value="Loop is off" onclick="toggle_loop(this);" />
+		</p>
+		<p>
+			Current time: <span id="vimeo_cur_time">0</span><br />
+			Bytes loaded: <span id="vimeo_bytes_loaded">0</span> / <span id="vimeo_bytes_total">0</span> = <span id="vimeo_decimal_loaded">0</span> = <span id="vimeo_percent_loaded">0%</span><br />
+			
+		</p>
+	</div>
+	
+</body>
+</html>
