@@ -32,7 +32,7 @@
 		});
 		
 		function getVideo(url) {
-			$.getScript(oEmbedEndpoint + '?url=' + url + '&width=504&callback=' + oEmbedCallback);
+			$.getScript(oEmbedEndpoint + '?url=' + url + '&width=504&height=280&callback=' + oEmbedCallback);
 		}
 		
 		function setupGallery(videos) {
@@ -61,7 +61,7 @@
 		}
 		
 		function switchVideo(video) {
-			$('#embed').html(unescape(video.html.replace(/height="(\d+)"/, 'height="280"')));
+			$('#embed').html(unescape(video.html));
 		}
 		
 	</script>

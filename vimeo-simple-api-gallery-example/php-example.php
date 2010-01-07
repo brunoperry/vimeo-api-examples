@@ -95,7 +95,7 @@ else {
 		var oEmbedCallback = 'embedVideo';
 		
 		// Set up the URL
-		var oEmbedUrl = 'http://www.vimeo.com/api/oembed.json';
+		var oEmbedUrl = 'http://vimeo.com/api/oembed.json';
 		
 		// Load the first one in automatically?
 		var loadFirst = true;
@@ -103,7 +103,7 @@ else {
 		// This function puts the video on the page
 		function embedVideo(video) {
 			var videoEmbedCode = video.html;
-			videoEmbedCode = videoEmbedCode.replace(/height="(\d+)"/, 'height="280"');
+			//videoEmbedCode = videoEmbedCode.replace(/height="(\d+)"/, 'height="280"');
 			document.getElementById('embed').innerHTML = unescape(videoEmbedCode);
 		}
 		
@@ -116,7 +116,7 @@ else {
 				if (document.addEventListener) {
 					links[i].addEventListener('click', function(e) {
 						var link = this;
-						loadScript(oEmbedUrl + '?url=' + link.href + '&width=504&callback=' + oEmbedCallback);
+						loadScript(oEmbedUrl + '?url=' + link.href + '&width=504&height=280&callback=' + oEmbedCallback);
 						e.preventDefault();
 					}, false);
 				}
@@ -124,7 +124,7 @@ else {
 				else {
 					links[i].attachEvent('onclick', function(e) {
 						var link = e.srcElement.parentNode;
-						loadScript(oEmbedUrl + '?url=' + link.href + '&width=504&callback=' + oEmbedCallback);
+						loadScript(oEmbedUrl + '?url=' + link.href + '&width=504&height=280&callback=' + oEmbedCallback);
 						return false;
 					});
 				}
@@ -132,7 +132,7 @@ else {
 			
 			// Load in the first video
 			if (loadFirst) {
-				loadScript(oEmbedUrl + '?url=' + links[0].href + '&width=504&callback=' + oEmbedCallback);
+				loadScript(oEmbedUrl + '?url=' + links[0].href + '&height=280&width=504&callback=' + oEmbedCallback);
 			}
 		}
 		
