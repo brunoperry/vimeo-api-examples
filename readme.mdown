@@ -1,0 +1,3 @@
+# This is no longer being maintained.
+
+Please see the [official repository at github.com/vimeo](http://github.com/vimeo/vimeo-api-examples).
